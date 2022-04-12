@@ -3,7 +3,7 @@ from datetime import datetime
 from get_positions import get_positions
 
 
-class CCPSimulator:
+class MarketStrategySimulator:
 
     def __init__(self, ccp):
         self.closed_trades = []
@@ -62,7 +62,3 @@ class CCPSimulator:
         # If there are still open trades there should be a control to check these positions and get current price
 
 
-# for i in range(1, 50):
-#     sim = CCPSimulator(i)
-#     sim.simulate()
-#     print(f"{i} CCP:{sim.simulated_positions['PNL'].sum() + sim.budget}")
