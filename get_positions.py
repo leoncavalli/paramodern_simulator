@@ -4,6 +4,8 @@ from database.psql_dbconn import engine
 import pandas as pd
 
 
+# Get Positions from DB
+
 def get_positions() -> List[Position]:
     positions = []
     df = pd.read_sql(
@@ -28,4 +30,3 @@ def get_positions() -> List[Position]:
         except Exception as error:
             print(row["id"], repr(error))
     return positions
-
