@@ -3,8 +3,8 @@ from models.position import Position
 from database.psql_dbconn import engine
 import pandas as pd
 
-
 # Get Positions from DB.
+
 
 def get_positions() -> List[Position]:
     positions = []
