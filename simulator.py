@@ -10,7 +10,7 @@ class MarketStrategySimulator:
         self.open_trades = []
         self.positions = get_positions()
         self.concurrent_pos_count = ccp
-        self.budget = 10000
+        self.budget = float(10000)
         self.budget_per_position = self.budget / self.concurrent_pos_count
         self.simulated_positions = pd.DataFrame(columns=["Id", "EnterDate", "ExitDate", "EnterPrice", "ExitPrice",
                                                          "ProfitPercent", "PositionBudget", "PNL"])
@@ -34,12 +34,12 @@ class MarketStrategySimulator:
         self.simulated_positions.loc[self.simulated_positions.Id == position.id, 'ExitDate'] = position.exitDate
         self.simulated_positions.loc[self.simulated_positions.Id == position.id, 'ProfitPercent'] = profit_percent
         self.simulated_positions.loc[self.simulated_positions.Id == position.id, 'PNL'] = (
-                                                                                                      profit_percent / 100) * self.budget_per_position
+                                                                                                  profit_percent / 100) * self.budget_per_position
         self.budget_per_position = (self.simulated_positions["PNL"].sum() + self.budget) / self.concurrent_pos_count
 
     def check_open_trades(self, date):
         for pos in self.open_trades:
-            if pos.exitDate <= date:
+            if pos.exitDate is not None and pos.exitDate <= date:
                 self.exit_position(pos)
 
     def simulate(self):
@@ -57,8 +57,6 @@ class MarketStrategySimulator:
 
         # Check if any closed position left
         for i in range(len(self.open_trades)):
-            self.check_open_trades(datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%f"))
+            self.check_open_trades(datetime.utcnow())
 
         # If there are still open trades there should be a control to check these positions and get current price
-
-
