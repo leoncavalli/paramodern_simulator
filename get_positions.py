@@ -7,6 +7,7 @@ from random import randrange
 import uuid
 import random
 
+
 # Get Positions from DB.
 
 
@@ -17,7 +18,6 @@ def get_positions() -> List[Position]:
         "order by p.created_at",
         engine)
     for index, row in df.iterrows():
-
         try:
             if row["status"] == "CLOSED":
                 positions.append(Position(position_id=row["id"],
@@ -48,7 +48,7 @@ def random_date(start, end):
     return start + timedelta(seconds=random_second)
 
 
-def create_synthetic_positions(position_count):
+def create_synthetic_positions(position_count) -> List[Position]:
     positions = []
     from_date = datetime(2022, 1, 1)
     to_date = datetime(2022, 4, 12)

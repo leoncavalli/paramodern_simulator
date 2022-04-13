@@ -15,6 +15,9 @@ def get_best_ccp_for_strategy():
 
 
 def get_daily_performance(ccp):
+    # TODO ccp as parameter will be removed and get_best_ccp_for_strategy method will be called and
+    #  ccp parameter will be received from there.
+    #  Function will only take from_date, to_date parameters to pass simulator and create range of dates.
     sim = MarketStrategySimulator(ccp)
     sim.simulate()
     simulated_positions_df = sim.simulated_positions
