@@ -8,7 +8,7 @@ class MarketStrategySimulator:
     def __init__(self, ccp):
         self.closed_trades = []
         self.open_trades = []
-        self.positions = create_synthetic_positions(10000)
+        self.positions = create_synthetic_positions(1000)
         self.concurrent_pos_count = ccp
         self.budget = float(10000)
         self.budget_per_position = self.budget / self.concurrent_pos_count

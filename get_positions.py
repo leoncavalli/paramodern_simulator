@@ -50,12 +50,12 @@ def random_date(start, end):
 
 def create_synthetic_positions(position_count):
     positions = []
-    from_date = datetime(2022, 3, 1)
-    to_date = datetime(2022, 4, 13)
+    from_date = datetime(2022, 1, 1)
+    to_date = datetime(2022, 4, 12)
     for i in range(position_count):
         hour = random.randint(0, 60)
         enter_price = random.uniform(0.1, 10.3)
-        profit_percent = random.uniform(-3.5, 6.1)
+        profit_percent = random.uniform(-3.5, 4)
         exit_price = enter_price + (enter_price * profit_percent / 100)
         guid = str(uuid.uuid4())
         enter_date = random_date(from_date, to_date)
