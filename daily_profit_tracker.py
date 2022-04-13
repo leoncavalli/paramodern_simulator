@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 from simulator import MarketStrategySimulator
 
 
-def get_daily_performance():
-    sim = MarketStrategySimulator(12)
+def get_daily_performance(ccp):
+    sim = MarketStrategySimulator(ccp)
     sim.simulate()
     simulated_positions_df = sim.simulated_positions
-
+    print(simulated_positions_df)
     from_date = datetime(2022, 3, 1)
     to_date = datetime(2022, 4, 13)
     date_range = pd.date_range(from_date, to_date).tolist()
@@ -43,4 +43,4 @@ def get_daily_performance():
     return daily_profit_df
 
 
-print(get_daily_performance())
+print(get_daily_performance(10))

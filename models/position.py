@@ -14,7 +14,10 @@ class Position:
 
     @staticmethod
     def convert_to_datetime(date):
-        try:
-            return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
-        except:
-            return None
+        if type(date) == datetime:
+            return date
+        else:
+            try:
+                return datetime.strptime(date, "%Y-%m-%dT%H:%M:%S.%fZ")
+            except:
+                return None

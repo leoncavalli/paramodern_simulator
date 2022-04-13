@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime
-from get_positions import get_positions
+from get_positions import get_positions,create_synthetic_positions
 
 
 class MarketStrategySimulator:
@@ -8,7 +8,7 @@ class MarketStrategySimulator:
     def __init__(self, ccp):
         self.closed_trades = []
         self.open_trades = []
-        self.positions = get_positions()
+        self.positions = create_synthetic_positions(10000)
         self.concurrent_pos_count = ccp
         self.budget = float(10000)
         self.budget_per_position = self.budget / self.concurrent_pos_count
