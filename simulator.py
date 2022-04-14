@@ -1,14 +1,12 @@
 import pandas as pd
-from datetime import datetime
-from get_positions import get_positions, create_synthetic_positions
+from datetime import datetime,timedelta
 
 
 class MarketStrategySimulator:
-    # TODO: Parameter "from_date" and "to_date" needed when calling get_positions() from DB.No need right now.
-    def __init__(self, ccp):
+    def __init__(self, positions, ccp):
         self.closed_trades = []
         self.open_trades = []
-        self.positions = create_synthetic_positions(1000)  # get_positions()
+        self.positions = positions
         self.concurrent_pos_count = ccp
         self.budget = float(10000)  # Giving initial budget
         self.budget_per_position = self.budget / self.concurrent_pos_count
@@ -60,3 +58,39 @@ class MarketStrategySimulator:
             self.check_open_trades(datetime.utcnow())
 
         # If there are still open trades there should be a control to check these positions and get current prices
+
+    def get_daily_performance(self):
+        if len(self.simulated_positions)>1:
+            from_date = datetime(2022, 1, 1)
+            to_date = datetime(2022, 4, 12)
+            date_range = pd.date_range(from_date, to_date).tolist()
+
+            daily_profit_df = pd.DataFrame(columns=["Date", "PortfolioValue"])
+            daily_profit_df.Date = date_range
+            daily_profit_df.PortfolioValue = self.budget
+
+            realized_pnl = 0
+            for i in range(len(date_range)):
+                next_date = date_range[i] + timedelta(days=1)
+
+                # Get positions which are closed at this day
+                today_closed_pos = self.simulated_positions[(self.simulated_positions["ExitDate"] >= date_range[i])
+                                                          & (self.simulated_positions["ExitDate"] < next_date)]
+
+                # Get positions which are still open today
+                today_s_open_pos = self.simulated_positions[(self.simulated_positions["EnterDate"] < next_date) &
+                                                          ((self.simulated_positions["ExitDate"] >= next_date) | (
+                                                                  self.simulated_positions["ExitDate"] is None))]
+
+                today_s_realized_pnl = today_closed_pos["PNL"].sum()
+                realized_pnl += today_s_realized_pnl
+
+                # TODO: Giving 0 right now but we should iterate over today_s_open_pos and
+                # TODO: get symbol's this day price to calculate instant profit
+                today_s_unrealized_pnl = 0
+
+                daily_profit_df.at[i, "PortfolioValue"] += realized_pnl + today_s_unrealized_pnl
+
+            daily_profit_df["%PortfolioValueChg"] = (daily_profit_df["PortfolioValue"] - self.budget) / self.budget * 100
+            daily_profit_df.drop("PortfolioValue", axis=1)
+            return daily_profit_df
