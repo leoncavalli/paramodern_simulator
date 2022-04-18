@@ -1,4 +1,5 @@
-from flask import Flask, request ,Response
+import json
+from flask import Flask, request, Response
 import manager
 
 app = Flask(__name__)
@@ -7,7 +8,7 @@ app = Flask(__name__)
 @app.route('/daily-performance/', methods=['GET'])
 def get_daily_performance():
     response = manager.get_daily_performance()
-    return response
+    return json.dumps(response)
 
 
 @app.route('/daily-performance-with-ccp/', methods=['POST'])
@@ -18,7 +19,8 @@ def get_daily_performance_with_ccp():
         return Response(status=401, response="CCP value must be between 1 and 50.")
     else:
         response = manager.get_daily_performance_with_ccp(req_data["ccp"])
-        return response
+        return json.dumps(response)
 
 
-app.run()
+if __name__ == "__main__":
+    app.run()

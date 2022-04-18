@@ -1,3 +1,5 @@
+import json
+
 from simulator import MarketStrategySimulator
 from get_positions import get_positions, create_synthetic_positions
 
@@ -19,8 +21,8 @@ def get_daily_performance():
     sim.simulate()
     performance_df = sim.get_daily_performance()
     performance_df.index = performance_df["Date"]
-    result = performance_df["%PortfolioValueChg"].to_json()
-    return result
+    result_dict = {"quote": "USDT", "cc_position_count": ccp, "results": performance_df["%PortfolioValueChg"].to_json()}
+    return result_dict
 
 
 def get_daily_performance_with_ccp(ccp):
@@ -29,8 +31,8 @@ def get_daily_performance_with_ccp(ccp):
     sim.simulate()
     performance_df = sim.get_daily_performance()
     performance_df.index = performance_df["Date"]
-    result = performance_df["%PortfolioValueChg"].to_json()
-    return result
+    result_dict = {"quote": "USDT", "cc_position_count": ccp, "results": performance_df["%PortfolioValueChg"].to_json()}
+    return result_dict
 
-# result = get_daily_performance()
+# result = get_daily_performance_with_ccp(3)
 # plt.plot(result.Date, result["%PortfolioValueChg"])
