@@ -1,5 +1,5 @@
 import pandas as pd
-from datetime import datetime,timedelta
+from datetime import datetime, timedelta
 
 
 class MarketStrategySimulator:
@@ -60,12 +60,12 @@ class MarketStrategySimulator:
         # If there are still open trades there should be a control to check these positions and get current prices
 
     def get_daily_performance(self):
-        if len(self.simulated_positions)>1:
-            from_date = datetime(2022, 1, 1)
-            to_date = datetime(2022, 4, 12)
+        daily_profit_df = pd.DataFrame(columns=["Date", "PortfolioValue", "%PV"])
+        if len(self.simulated_positions) > 1:
+            from_date = datetime(2022, 3, 1)
+            to_date = datetime.today().date()
             date_range = pd.date_range(from_date, to_date).tolist()
 
-            daily_profit_df = pd.DataFrame(columns=["Date", "PortfolioValue"])
             daily_profit_df.Date = date_range
             daily_profit_df.PortfolioValue = self.budget
 
@@ -75,12 +75,12 @@ class MarketStrategySimulator:
 
                 # Get positions which are closed at this day
                 today_closed_pos = self.simulated_positions[(self.simulated_positions["ExitDate"] >= date_range[i])
-                                                          & (self.simulated_positions["ExitDate"] < next_date)]
+                                                            & (self.simulated_positions["ExitDate"] < next_date)]
 
                 # Get positions which are still open today
                 today_s_open_pos = self.simulated_positions[(self.simulated_positions["EnterDate"] < next_date) &
-                                                          ((self.simulated_positions["ExitDate"] >= next_date) | (
-                                                                  self.simulated_positions["ExitDate"] is None))]
+                                                            ((self.simulated_positions["ExitDate"] >= next_date) | (
+                                                                    self.simulated_positions["ExitDate"] is None))]
 
                 today_s_realized_pnl = today_closed_pos["PNL"].sum()
                 realized_pnl += today_s_realized_pnl
@@ -91,6 +91,8 @@ class MarketStrategySimulator:
 
                 daily_profit_df.at[i, "PortfolioValue"] += realized_pnl + today_s_unrealized_pnl
 
-            daily_profit_df["%PortfolioValueChg"] = (daily_profit_df["PortfolioValue"] - self.budget) / self.budget * 100
-            daily_profit_df.drop("PortfolioValue", axis=1)
-            return daily_profit_df
+            daily_profit_df["%PV"] = (daily_profit_df["PortfolioValue"] - self.budget) / self.budget * 100
+            daily_profit_df["%PV"] = daily_profit_df["%PV"].apply(lambda x: round(x, 2))
+            daily_profit_df.drop("PortfolioValue", axis=1, inplace=True)
+            daily_profit_df.index = daily_profit_df["Date"].apply(lambda x: x.strftime("%m-%d-%Y"))
+        return daily_profit_df

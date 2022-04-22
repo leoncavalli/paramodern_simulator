@@ -8,5 +8,5 @@ load_dotenv(dotenv_path)
 # DB Setup
 engine = create_engine(
     f'postgresql+psycopg2://{os.getenv("PSQL_USERNAME")}:{os.getenv("PSQL_PASSWORD")}'
-    f'@{os.getenv("PSQL_HOSTNAME")}:5433/'
+    f'@{os.getenv("PSQL_HOSTNAME")}:{os.getenv("PSQL_PORT")}/'
     f'{os.getenv("PSQL_DBNAME")}')

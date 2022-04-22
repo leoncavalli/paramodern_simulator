@@ -2,9 +2,10 @@ from datetime import datetime
 
 
 class Position:
-    def __init__(self, position_id, enter_price, enter_date, exit_date=None,
+    def __init__(self, position_id, symbol, enter_price, enter_date, exit_date=None,
                  exit_price=None, exit_by=None, profit_percent=None):
         self.id = position_id
+        self.symbol = symbol
         self.enterPrice = enter_price
         self.enterDate = self.convert_to_datetime(enter_date)
         self.exitDate = self.convert_to_datetime(exit_date)

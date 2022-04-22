@@ -11,16 +11,20 @@ import random
 # Get Positions from DB.
 
 
-def get_positions() -> List[Position]:
+def get_positions(strategy_id) -> List[Position]:
     positions = []
+
     df = pd.read_sql(
-        "select id,position_info,budget_settings,virtual,status from public.positions p where p.virtual =true "
-        "order by p.created_at",
+        "select p.id,s.info,p.position_info,p.budget_settings,p.virtual,p.status "
+        f"from positions p left join signals s on p.signal_id = s.id "
+        f"where s.strategy_id={strategy_id}  "
+        f"and p.virtual=true",
         engine)
     for index, row in df.iterrows():
         try:
             if row["status"] == "CLOSED":
                 positions.append(Position(position_id=row["id"],
+                                          symbol=row["info"]["symbol"],
                                           enter_price=row["position_info"]["enterPrice"],
                                           enter_date=row["position_info"]["enterDate"],
                                           exit_price=row["position_info"]["exitPrice"],
@@ -29,6 +33,7 @@ def get_positions() -> List[Position]:
                                           , profit_percent=row["position_info"]["positionPriceDiffPercent"]))
             else:
                 positions.append(Position(position_id=row["id"],
+                                          symbol=row["info"]["symbol"],
                                           enter_price=row["position_info"]["enterPrice"],
                                           enter_date=row["position_info"]["enterDate"]))
         except Exception as error:
@@ -61,6 +66,7 @@ def create_synthetic_positions(position_count) -> List[Position]:
         enter_date = random_date(from_date, to_date)
         exit_date = enter_date + timedelta(hours=hour)
         positions.append(Position(position_id=guid,
+                                  symbol="",
                                   enter_price=enter_price,
                                   enter_date=enter_date,
                                   exit_price=exit_price,
